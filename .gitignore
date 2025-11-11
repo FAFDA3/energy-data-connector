@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+.env
+config/connections.json
+config/queries.json
+logs/
+data/
+.DS_Store

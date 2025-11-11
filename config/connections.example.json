@@ -1,0 +1,12 @@
+[
+  {
+    "id": "sample-plant",
+    "name": "Sample Plant",
+    "influx": {
+      "url": "http://localhost:8086",
+      "org": "demo-org",
+      "bucket": "demo-bucket",
+      "token": "demo-token"
+    }
+  }
+]

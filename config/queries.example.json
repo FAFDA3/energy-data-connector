@@ -1,0 +1,16 @@
+[
+  {
+    "id": "energy-summary",
+    "name": "Energy Summary (30min)",
+    "description": "Aggregated consumption data",
+    "parameters": {
+      "requires": ["start", "end"]
+    },
+    "flux": "from(bucket: \"{{bucket}}\")\n  |> range(start: {{start}}, stop: {{end}})\n  |> filter(fn: (r) => r._measurement == \"energy\")\n  |> aggregateWindow(every: 30m, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+    "output": {
+      "format": "jsonl",
+      "compression": "zstd",
+      "fileName": "energy-summary-{{timestamp}}.jsonl.zst"
+    }
+  }
+]
