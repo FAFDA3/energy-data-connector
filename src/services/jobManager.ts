@@ -9,10 +9,12 @@ export type ExportJob = {
   updatedAt: number;
   progress: number; // 0..1
   rowCount: number;
+  status?: string; // Status message (e.g., "Querying InfluxDB...", "Processing data...")
   error?: string;
   outputFile?: string;
   manifestFile?: string;
   sha256?: string;
+  data?: unknown[]; // Dati esportati (in memoria per download)
 };
 
 const jobs = new Map<string, ExportJob>();

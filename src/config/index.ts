@@ -1,5 +1,8 @@
 import { config as loadEnv } from 'dotenv';
 import { z } from 'zod';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { existsSync } from 'fs';
 
 let cachedConfig: Config | null = null;
 
@@ -44,7 +47,21 @@ export function loadConfig(): Config {
     return cachedConfig;
   }
 
-  loadEnv();
+  // Carica .env.local se esiste, altrimenti .env
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const envLocalPath = join(__dirname, '../../.env.local');
+  const envPath = join(__dirname, '../../.env');
+  
+  // Prova prima .env.local, poi .env, poi default
+  if (existsSync(envLocalPath)) {
+    loadEnv({ path: envLocalPath });
+  } else if (existsSync(envPath)) {
+    loadEnv({ path: envPath });
+  } else {
+    loadEnv(); // Carica da process.env o .env nella root
+  }
+  
   const env = envSchema.parse(process.env);
 
   cachedConfig = {

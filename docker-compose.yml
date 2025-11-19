@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: energy-influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123456
+      - DOCKER_INFLUXDB_INIT_ORG=energy-org
+      - DOCKER_INFLUXDB_INIT_BUCKET=energy-data
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=energy-connector-token-dev-local-only
+    networks:
+      - energy-network
+    restart: unless-stopped
+
+volumes:
+  influxdb-data:
+    driver: local
+  influxdb-config:
+    driver: local
+
+networks:
+  energy-network:
+    driver: bridge
+

@@ -24,7 +24,7 @@ app.use(morgan('combined'));
 
 app.use('/health', healthRouter);
 app.use('/session', sessionRouter);
-app.use(authMiddleware);
+app.use(authMiddleware); // Tutte le route dopo questo richiedono autenticazione
 app.use('/bulk', bulkRouter);
 app.use('/anchor', anchorRouter);
 
