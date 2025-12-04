@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createHash } from 'crypto';
 import { createJob, getJob, updateJob } from '../services/jobManager.js';
 import { queryEnergyData } from '../services/influx.js';
+import { getMachineIP } from '../utils/network.js';
 
 const router = Router();
 
@@ -64,6 +65,16 @@ router.post('/export', async (req, res) => {
         hash.update(jsonlData, 'utf8');
         const sha256 = hash.digest('hex');
 
+        // Aggiungi metadati con IP della macchina
+        const machineIP = getMachineIP();
+        const exportMetadata = {
+          machineIP: machineIP,
+          exportedAt: new Date().toISOString(),
+          rowCount: rowCount,
+          measurement: measurement,
+          filters: filters || {},
+        };
+
         updateJob(job.id, {
           state: 'done',
           progress: 1,
@@ -71,6 +82,7 @@ router.post('/export', async (req, res) => {
           status: 'Export completed',
           outputFile: `${job.id}.jsonl`,
           sha256: `0x${sha256}`,
+          metadata: exportMetadata,
           data: data, // Salva i dati in memoria per il download
         });
       } catch (err) {

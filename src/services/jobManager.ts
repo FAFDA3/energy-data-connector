@@ -14,6 +14,7 @@ export type ExportJob = {
   outputFile?: string;
   manifestFile?: string;
   sha256?: string;
+  metadata?: Record<string, any>; // Metadati export (IP macchina, timestamp, etc.)
   data?: unknown[]; // Dati esportati (in memoria per download)
 };
 

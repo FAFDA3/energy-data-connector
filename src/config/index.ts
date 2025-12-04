@@ -42,9 +42,14 @@ export type Config = {
   };
 };
 
-export function loadConfig(): Config {
-  if (cachedConfig) {
+export function loadConfig(forceReload = false): Config {
+  if (cachedConfig && !forceReload) {
     return cachedConfig;
+  }
+  
+  // Reset cache se forceReload
+  if (forceReload) {
+    cachedConfig = null;
   }
 
   // Carica .env.local se esiste, altrimenti .env

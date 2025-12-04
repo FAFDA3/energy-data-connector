@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Connector - Configuration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-indicator.online {
+            background: #28a745;
+        }
+
+        .status-indicator.offline {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Energy Connector Configuration</h1>
+            <p>Manage your connector settings</p>
+        </div>
+
+        <div class="content">
+            <div id="status-alert"></div>
+
+            <!-- InfluxDB Configuration -->
+            <div class="section">
+                <h2>📊 InfluxDB Configuration</h2>
+                <div class="form-group">
+                    <label for="influx-url">URL</label>
+                    <input type="text" id="influx-url" placeholder="http://localhost:8086">
+                </div>
+                <div class="form-group">
+                    <label for="influx-org">Organization</label>
+                    <input type="text" id="influx-org" placeholder="energy-org">
+                </div>
+                <div class="form-group">
+                    <label for="influx-bucket">Bucket</label>
+                    <input type="text" id="influx-bucket" placeholder="energy-data">
+                </div>
+                <div class="form-group">
+                    <label for="influx-token">Token</label>
+                    <input type="password" id="influx-token" placeholder="Your InfluxDB token">
+                </div>
+            </div>
+
+            <!-- Blockchain Configuration -->
+            <div class="section">
+                <h2>⛓️ Blockchain Configuration</h2>
+                <div class="form-group">
+                    <label for="blockchain-rpc">Polygon RPC URL</label>
+                    <input type="text" id="blockchain-rpc" placeholder="https://rpc-amoy.polygon.technology">
+                </div>
+                <div class="form-group">
+                    <label for="blockchain-contract">Contract Address</label>
+                    <input type="text" id="blockchain-contract" placeholder="0x...">
+                </div>
+                <div class="form-group">
+                    <label for="blockchain-private-key">Private Key (Optional)</label>
+                    <input type="password" id="blockchain-private-key" placeholder="0x...">
+                    <small>Only set if you want the connector to auto-anchor data</small>
+                </div>
+            </div>
+
+            <!-- Connector Configuration -->
+            <div class="section">
+                <h2>🔌 Connector Configuration</h2>
+                <div class="form-group">
+                    <label for="connector-port">Port</label>
+                    <input type="number" id="connector-port" placeholder="3001">
+                </div>
+                <div class="form-group">
+                    <label for="connector-ttl">Session TTL (seconds)</label>
+                    <input type="number" id="connector-ttl" placeholder="900">
+                </div>
+                <div class="form-group">
+                    <label for="connector-log-level">Log Level</label>
+                    <input type="text" id="connector-log-level" placeholder="info" list="log-levels">
+                    <datalist id="log-levels">
+                        <option value="error">
+                        <option value="warn">
+                        <option value="info">
+                        <option value="debug">
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label for="connector-origins">Allowed Origins (comma-separated)</label>
+                    <textarea id="connector-origins" placeholder="http://localhost:5173,http://localhost:3000"></textarea>
+                    <small>List of allowed CORS origins</small>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="save-btn" onclick="saveConfig()">
+                    💾 Save Configuration
+                </button>
+                <button class="btn btn-secondary" onclick="loadConfig()">
+                    🔄 Reload
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/config';
+
+        async function loadConfig() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to load config');
+                
+                const config = await response.json();
+                
+                // Popola form InfluxDB
+                document.getElementById('influx-url').value = config.influx?.url || '';
+                document.getElementById('influx-org').value = config.influx?.org || '';
+                document.getElementById('influx-bucket').value = config.influx?.bucket || '';
+                document.getElementById('influx-token').value = config.influx?.token || '';
+                
+                // Popola form Blockchain
+                document.getElementById('blockchain-rpc').value = config.blockchain?.rpcUrl || '';
+                document.getElementById('blockchain-contract').value = config.blockchain?.contractAddress || '';
+                // Private key non viene mostrata per sicurezza
+                
+                // Popola form Connector
+                document.getElementById('connector-port').value = config.connector?.port || '';
+                document.getElementById('connector-ttl').value = config.connector?.sessionTtlSeconds || '';
+                document.getElementById('connector-log-level').value = config.connector?.logLevel || '';
+                document.getElementById('connector-origins').value = config.connector?.allowedOrigins?.join(', ') || '';
+                
+                showAlert('Configuration loaded successfully', 'success');
+            } catch (error) {
+                showAlert('Failed to load configuration: ' + error.message, 'error');
+            }
+        }
+
+        async function saveConfig() {
+            const btn = document.getElementById('save-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Saving...';
+
+            try {
+                const config = {
+                    influx: {
+                        url: document.getElementById('influx-url').value,
+                        org: document.getElementById('influx-org').value,
+                        bucket: document.getElementById('influx-bucket').value,
+                        token: document.getElementById('influx-token').value,
+                    },
+                    blockchain: {
+                        rpcUrl: document.getElementById('blockchain-rpc').value,
+                        contractAddress: document.getElementById('blockchain-contract').value,
+                        privateKey: document.getElementById('blockchain-private-key').value || undefined,
+                    },
+                    connector: {
+                        port: parseInt(document.getElementById('connector-port').value) || undefined,
+                        sessionTtlSeconds: parseInt(document.getElementById('connector-ttl').value) || undefined,
+                        logLevel: document.getElementById('connector-log-level').value || undefined,
+                        allowedOrigins: document.getElementById('connector-origins').value.split(',').map(s => s.trim()).filter(s => s),
+                    },
+                };
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(config),
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to save');
+                }
+
+                const result = await response.json();
+                showAlert(result.message || 'Configuration saved successfully! Please restart the server.', 'success');
+            } catch (error) {
+                showAlert('Failed to save configuration: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '💾 Save Configuration';
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('status-alert');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Carica configurazione all'avvio
+        window.onload = () => {
+            loadConfig();
+        };
+    </script>
+</body>
+</html>
+
