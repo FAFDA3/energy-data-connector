@@ -9,13 +9,13 @@
 
 Browser/Frontend  ──HTTP──►  Connector (localhost:3001)
                                       │
-                                      │ ❌ NON CONNESSO (STUB)
+                                      │ ✅ CONNESSO (FUNZIONANTE)
                                       │
                            InfluxDB (localhost:8086)
                                   (Docker)
 ```
 
-**Problema**: Il connector è uno STUB - legge le configurazioni ma NON si connette realmente a InfluxDB.
+**Stato**: Il connector è completamente implementato e funzionante - si connette realmente a InfluxDB usando `@influxdata/influxdb-client`.
 
 ---
 
@@ -144,30 +144,32 @@ for await (const { values, tableMeta } of queryApi.iterateRows(fluxQuery)) {
 
 ---
 
-## Cosa Manca (TODO)
+## Stato Implementazione
 
 1. ✅ **Configurazione**: Fatto (`.env.local` con credenziali)
 
-2. ❌ **Libreria InfluxDB**: Manca `@influxdata/influxdb-client`
-   ```bash
-   npm install @influxdata/influxdb-client
-   ```
+2. ✅ **Libreria InfluxDB**: Installata `@influxdata/influxdb-client`
 
-3. ❌ **Implementazione connessione**: Il file `src/services/influx.ts` è uno stub
-   - Deve creare client InfluxDB
-   - Deve eseguire query Flux
-   - Deve ritornare dati formattati
+3. ✅ **Implementazione connessione**: Il file `src/services/influx.ts` è completamente implementato
+   - ✅ Crea client InfluxDB
+   - ✅ Esegue query Flux
+   - ✅ Ritorna dati formattati
 
-4. ❌ **Integrazione con bulk export**: `src/routes/bulk.ts` chiama `executeFluxQuery` ma non fa nulla
+4. ✅ **Integrazione con bulk export**: `src/routes/bulk.ts` esegue query reali e processa dati
 
-5. ❌ **Gestione file export**: Manca compressione, hashing, salvataggio su disco
+5. ⚠️ **Gestione file export**: 
+   - ✅ Hashing SHA-256 implementato
+   - ⚠️ Compressione zstd non ancora implementata
+   - ⚠️ Salvataggio su disco non ancora implementato (dati in memoria)
 
 ---
 
-## Prossimi Passi
+## Funzionalità Implementate
 
-1. Installare libreria InfluxDB client
-2. Implementare connessione reale in `influx.ts`
-3. Integrare con le route esistenti
-4. Testare con query reali sui dati demo
+1. ✅ Connessione reale a InfluxDB
+2. ✅ Query Flux funzionanti
+3. ✅ Export dati con hash SHA-256
+4. ✅ Download dati in formato JSONL
+5. ✅ Autenticazione con PIN e token
+6. ✅ Health check endpoint
 
