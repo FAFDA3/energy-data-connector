@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { loadConfig } from '../config/index.js';
 import { testConnection } from '../services/influx.js';
+import { isS3Configured } from '../services/s3.js';
 
 const router = Router();
 const config = loadConfig();
@@ -20,6 +21,34 @@ router.get('/influx', async (_req, res) => {
         org: config.influxDefault.org,
         bucket: config.influxDefault.bucket,
       },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// GET /health/s3 - Verifica configurazione AWS S3
+router.get('/s3', (_req, res) => {
+  try {
+    const s3Config = config.s3;
+    const configured = isS3Configured();
+    
+    return res.json({
+      ok: configured,
+      s3: {
+        configured,
+        region: s3Config.region || null,
+        bucket: s3Config.bucket || null,
+        hasAccessKey: !!s3Config.accessKeyId,
+        hasSecretKey: !!s3Config.secretAccessKey,
+        // Non esporre le chiavi per sicurezza
+      },
+      message: configured 
+        ? 'AWS S3 is configured and ready' 
+        : 'AWS S3 is not configured. Please set AWS_REGION and AWS_S3_BUCKET in .env.local',
     });
   } catch (error) {
     return res.status(500).json({

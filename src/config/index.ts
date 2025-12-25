@@ -19,6 +19,11 @@ const envSchema = z.object({
   SESSION_TTL_SECONDS: z.string().default('900'),
   LOG_LEVEL: z.string().default('info'),
   CONNECTOR_ALLOWED_ORIGINS: z.string().optional(),
+  // AWS S3 Configuration
+  AWS_REGION: z.string().optional(),
+  AWS_S3_BUCKET: z.string().optional(),
+  AWS_ACCESS_KEY_ID: z.string().optional(),
+  AWS_SECRET_ACCESS_KEY: z.string().optional(),
 });
 
 export type Config = {
@@ -39,6 +44,12 @@ export type Config = {
     sessionTtlSeconds: number;
     logLevel: string;
     allowedOrigins: string[];
+  };
+  s3: {
+    region?: string;
+    bucket?: string;
+    accessKeyId?: string;
+    secretAccessKey?: string;
   };
 };
 
@@ -89,6 +100,12 @@ export function loadConfig(forceReload = false): Config {
       allowedOrigins: env.CONNECTOR_ALLOWED_ORIGINS
         ? env.CONNECTOR_ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
         : ['http://localhost:5173'],
+    },
+    s3: {
+      region: env.AWS_REGION,
+      bucket: env.AWS_S3_BUCKET,
+      accessKeyId: env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
     },
   };
 
